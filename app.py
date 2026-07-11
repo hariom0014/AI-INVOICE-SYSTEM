@@ -78,6 +78,14 @@ def dashboard():
 @login_required
 def upload():
 
+    global ocr, extractor
+
+    if ocr is None:
+        ocr = OCRService()
+
+    if extractor is None:
+        extractor = InvoiceExtractor()
+
     if request.method == "POST":
 
         if "invoice" not in request.files:
@@ -85,20 +93,7 @@ def upload():
 
         file = request.files["invoice"]
 
-        if file.filename == "":
-            return "Please select a file"
-
-        filepath = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            file.filename
-        )
-
-        file.save(filepath)
-
-        try:
-
-            print("=" * 80)
-            print("UPLOADED FILE :", filepath)
+        # ... rest of your code ...
 
             # OCR
             text = ocr.extract_text(filepath)
