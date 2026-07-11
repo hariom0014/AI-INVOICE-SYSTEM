@@ -77,7 +77,6 @@ def dashboard():
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
 def upload():
-
     global ocr, extractor
 
     if ocr is None:
@@ -93,7 +92,35 @@ def upload():
 
         file = request.files["invoice"]
 
-        # ... rest of your code ...
+        if file.filename == "":
+            return "Please select a file"
+
+        filepath = os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            file.filename
+        )
+
+        file.save(filepath)
+
+        try:
+            text = ocr.extract_text(filepath)
+
+            if text.strip() == "":
+                return "OCR could not detect any text."
+
+            invoice_data = extractor.extract(text)
+            invoice_data["file_name"] = file.filename
+
+            db_service.save_invoice(invoice_data)
+
+            return redirect("/invoices")
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return f"OCR Error: {e}"
+
+    return render_template("upload.html")
 
             # OCR
             text = ocr.extract_text(filepath)
