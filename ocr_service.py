@@ -25,12 +25,15 @@ from pdf2image import convert_from_path
 class OCRService:
 
     def __init__(self):
+        self.reader = None
 
-        # English Reader
-        self.reader = easyocr.Reader(
-            ['en'],
-            gpu=False
-        )
+    def get_reader(self):
+        if self.reader is None:
+            self.reader = easyocr.Reader(
+                ['en'],
+                gpu=False
+            )
+        return self.reader
 
     # ---------------------------------
     # IMAGE PREPROCESSING
@@ -70,13 +73,14 @@ class OCRService:
             image_path
         )
 
-        result = self.reader.readtext(
+        reader = self.get_reader()
+
+result = reader.readtext(
     processed,
     detail=0,
     paragraph=True,
     decoder="beamsearch"
-    )
-        
+)
 
         return "\n".join(result)
 
