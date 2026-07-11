@@ -138,6 +138,14 @@ def upload():
             return f"OCR Error : {e}"
 
     return render_template("upload.html")
+
+           global ocr, extractor
+
+    if ocr is None:
+       ocr = OCRService()
+
+    if extractor is None:
+       extractor = InvoiceExtractor()
 # ------------------------
 # Invoices
 # ------------------------
