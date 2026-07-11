@@ -48,8 +48,8 @@ with app.app_context():
 
 db_service = DatabaseService()
 
-ocr = OCRService()
-extractor = InvoiceExtractor()
+ocr = None
+extractor = None
 # ------------------------
 # Dashboard
 # ------------------------
